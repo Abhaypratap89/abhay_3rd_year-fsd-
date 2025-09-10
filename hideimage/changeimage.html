@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hide Image Example</title>
+  <title>Change Image Example</title>
   <style>
     body, html {
       height: 100%;
@@ -38,27 +38,34 @@
       border: none;
       border-radius: 8px;
       cursor: pointer;
-      background-color: #007bff;
+      background-color: #28a745;
       color: white;
     }
     button:hover {
-      background-color: #0056b3;
+      background-color: #1e7e34;
     }
   </style>
 </head>
 <body>
 
   <div class="upper">
-    <img id="myImage" src="https://via.placeholder.com/400" alt="Sample Image">
+    <img id="myImage" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfaju239PtdzAU30AajoPPnk6kUcYMuHsXaQ&s" alt="Sample Image">
   </div>
 
   <div class="lower">
-    <button onclick="hideImage()">Hide Image</button>
+    <button onclick="changeImage()">Change Image</button>
   </div>
 
   <script>
-    function hideImage() {
-      document.getElementById("myImage").style.display = "none";
+    let toggle = true;
+    function changeImage() {
+      let img = document.getElementById("myImage");
+      if (toggle) {
+        img.src = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmeg3f0sQvAKOcyQDsTQk4EK12p2thCni6zg&s";
+      } else {
+        img.src = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ5CKjKhSgeioQiRGP0u36DXsMa_6eIV0dHTQ&s";
+      }
+      toggle = !toggle;
     }
   </script>
 
