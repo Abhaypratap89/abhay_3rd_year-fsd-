@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Doctor Verify MVP</title>
+  <style>
+:root{--accent:#05668D;--muted:#6b7280;--bg:#f6fbff;--card:#ffffff}
+*{box-sizing:border-box;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial}
+body{margin:0;background:linear-gradient(180deg,var(--bg),#eef6fb);color:#0f172a}
+header{display:flex;align-items:center;justify-content:space-between;padding:20px 28px}
+.brand{display:flex;gap:12px;align-items:center}
+.logo{width:44px;height:44px;border-radius:8px;background:var(--accent);display:grid;place-items:center;color:#fff;font-weight:700}
+nav{display:flex;gap:12px}
+nav a{color:var(--muted);text-decoration:none;font-weight:600}
+.container{max-width:1100px;margin:18px auto;padding:0 20px}
+
+
+.hero{display:grid;grid-template-columns:1fr 420px;gap:28px;align-items:center;margin-top:6px}
+.hero-card{background:var(--card);padding:26px;border-radius:12px;box-shadow:0 6px 20px rgba(9,30,66,0.06)}
+h1{font-size:28px;margin:0 0 8px}
+p.lead{color:var(--muted);margin:0 0 18px}
+
+
+.search{display:flex;gap:8px}
+.search input{flex:1;padding:12px 14px;border-radius:8px;border:1px solid #e6eef5}
+.search button{background:var(--accent);color:#fff;padding:12px 14px;border-radius:8px;border:0;cursor:pointer}
+
+
+.stats{display:flex;gap:10px;margin-top:16px}
+.stat{background:#f7fbfe;padding:10px;border-radius:8px;font-size:13px;color:var(--muted)}
+
+
+/* Right column: feature box */
+.feature{background:linear-gradient(180deg,#fff,#f7fbff);padding:18px;border-radius:12px;border:1px solid rgba(5,102,141,0.06)}
+.feature h3{margin:0 0 10px;font-size:16px;color:var(--accent)}
+.feature ul{margin:0;padding-left:18px;color:var(--muted)}
+
+
+/* Doctors grid */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:22px}
+.card{background:var(--card);padding:14px;border-radius:10px;box-shadow:0 4px 16px rgba(11,37,62,0.04);display:flex;gap:12px;align-items:center}
+.avatar{width:64px;height:64px;border-radius:10px;background:linear-gradient(45deg,#89c2d9,#05668d);display:grid;place-items:center;color:#fff;font-weight:700}
+.meta{flex:1}
+.meta h4{margin:0;font-size:15px}
+.meta p{margin:4px 0 0;color:var(--muted);font-size:13px}
+.badge{padding:6px 8px;border-radius:8px;background:#eef9f6;color:#0b6b4f;font-weight:700;font-size:12px}
+.cta{padding:6px 8px;border-radius:8px;border:1px solid #e2eef6;background:#fff;color:var(--accent);cursor:pointer;font-size:12px}
+
+
+/* Responsive */
+@media(max-width:980px){
+.hero{grid-template-columns:1fr}
+.grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:640px){
+nav{display:none}
+.grid{grid-template-columns:1fr}
+header{padding:12px}
+.hero-card{padding:18px}
+}
+
+
+/* Simple modal */
+.modal{position:fixed;inset:0;background:rgba(2,6,23,0.4);display:none;place-items:center;z-index:99}
+.modal.show{display:grid}
+.modal .box{background:#fff;padding:18px;border-radius:10px;min-width:320px;max-width:720px}
+.form-row{display:flex;gap:8px;margin-bottom:10px}
+.form-row input,textarea,select{flex:1;padding:10px;border-radius:8px;border:1px solid #e6eef5}
+.btn-primary{background:var(--accent);color:#fff;padding:10px 12px;border-radius:8px;border:0;cursor:pointer}
+
+
+footer{padding:20px;text-align:center;color:var(--muted);font-size:13px;margin-top:26px}
+</style>
+</head>
+<body>
+  <header>
+    <h1>Doctor Verify</h1>
+    <button class="btn-primary" onclick="openModalSignup()">Doctor Sign Up</button>
+  </header>
+
+  <main>
+    <input id="search" placeholder="Search doctors..." />
+    <div id="demo"></div>
+    <div id="results"></div>
+  </main>
+
+  <!-- Modal -->
+  <div id="modal">
+    <div class="modal-content">
+      <span onclick="closeModal()" style="cursor:pointer;float:right">❌</span>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+
+  <script>
+    // 👇 yahan tumhara JS code aayega pura (signupForm, viewProfile, submitDoctor, toggleVerify, deleteDoctor, etc.)
+    
+    function signupForm(){
+      return `
+        <h3>Doctor Sign up</h3>
+        <div class='form-row'>
+          <input id='dname' placeholder='Full name' />
+          <input id='dreg' placeholder='Registration No' />
+        </div>
+        <div class='form-row'>
+          <input id='dcity' placeholder='City' />
+          <input id='dspec' placeholder='Specialization' />
+        </div>
+        <div style='display:flex;gap:8px;justify-content:flex-end'>
+          <button class='btn-primary' onclick='submitDoctor()'>Submit</button>
+          <button onclick='closeModal()' class='cta'>Cancel</button>
+        </div>`;
+    }
+
+    function viewProfile(reg){
+      const d = demoDoctors.find(x=>x.reg===reg);
+      if(!d){alert('Profile not found');return}
+      openModal('profile',`
+        <h3>${d.name}</h3>
+        <p><strong>Reg:</strong> ${d.reg}</p>
+        <p><strong>Specialty:</strong> ${d.spec}</p>
+        <p><strong>City:</strong> ${d.city}</p>
+        <p><strong>Status:</strong> ${d.verified?"✅ Verified":"❌ Unverified"}</p>
+        <div style='display:flex;gap:8px;justify-content:flex-end;margin-top:12px'>
+          <button class='cta' onclick='toggleVerify("${d.reg}")'>${d.verified?"Mark Unverified":"Mark Verified"}</button>
+          <button class='cta' onclick='deleteDoctor("${d.reg}")'>Delete</button>
+          <button onclick='closeModal()' class='btn-primary'>Close</button>
+        </div>`);
+    }
+
+    function submitDoctor(){
+      const name=document.getElementById('dname').value||'Dr. (Name)';
+      const reg=document.getElementById('dreg').value||('NMR-'+Math.floor(Math.random()*90000+10000));
+      const city=document.getElementById('dcity').value||'City';
+      const spec=document.getElementById('dspec').value||'General';
+      demoDoctors.unshift({name,reg,city,spec,verified:false});
+      renderList(demoDoctors,'demo'); 
+      renderList(demoDoctors,'results'); 
+      closeModal();
+      alert('Doctor submitted. Waiting verification.');
+    }
+
+    function toggleVerify(reg){
+      const d = demoDoctors.find(x=>x.reg===reg);
+      if(d){d.verified=!d.verified;}
+      renderList(demoDoctors,'demo'); 
+      renderList(demoDoctors,'results'); 
+      closeModal();
+    }
+
+    function deleteDoctor(reg){
+      demoDoctors = demoDoctors.filter(d=>d.reg!==reg);
+      renderList(demoDoctors,'demo'); 
+      renderList(demoDoctors,'results'); 
+      closeModal();
+    }
+
+    function openModalSignup(){openModal('signup',signupForm());}
+
+    // replace signup button to new handler
+    document.querySelector('header button').setAttribute('onclick','openModalSignup()');
+  </script>
+</body>
+</html>
