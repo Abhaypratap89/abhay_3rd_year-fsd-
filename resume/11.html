@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sidebar with Hover Content</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      height: 100vh;
+    }
+    .sidebar {
+      width: 200px;
+      background: #f0f0f0;
+      border-right: 2px solid #ccc;
+      padding: 20px;
+    }
+    .sidebar a {
+      display: block;
+      padding: 10px;
+      margin-bottom: 10px;
+      text-decoration: none;
+      color: #333;
+      transition: background 0.3s;
+      border-radius: 5px;
+    }
+    .sidebar a:hover {
+      background: #ddd;
+    }
+    .content {
+      flex: 1;
+      padding: 20px;
+    }
+    .content-box {
+      display: none;
+    }
+    .content-box.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <a href="#" data-target="content1">Link 1</a>
+    <a href="#" data-target="content2">Link 2</a>
+    <a href="#" data-target="content3">Link 3</a>
+  </div>
+
+  <div class="content">
+    <div id="content1" class="content-box active">
+      <h2>🙂 Content 1</h2>
+      <p>This is the content for Link 1.</p>
+    </div>
+    <div id="content2" class="content-box">
+      <h2>📘 Content 2</h2>
+      <p>This is the content for Link 2.</p>
+    </div>
+    <div id="content3" class="content-box">
+      <h2>⭐ Content 3</h2>
+      <p>This is the content for Link 3.</p>
+    </div>
+  </div>
+
+  <script>
+    const links = document.querySelectorAll(".sidebar a");
+    const contents = document.querySelectorAll(".content-box");
+
+    links.forEach(link => {
+      link.addEventListener("mouseover", () => {
+        const targetId = link.getAttribute("data-target");
+
+        // Hide all content
+        contents.forEach(c => c.classList.remove("active"));
+
+        // Show target content
+        document.getElementById(targetId).classList.add("active");
+      });
+    });
+  </script>
+</body>
+</html>
